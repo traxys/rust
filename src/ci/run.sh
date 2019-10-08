@@ -114,7 +114,7 @@ make check-bootstrap
 
 # Display the CPU and memory information. This helps us know why the CI timing
 # is fluctuating.
-if isOSX; then
+if isMacOS; then
     system_profiler SPHardwareDataType || true
     sysctl hw || true
     ncpus=$(sysctl -n hw.ncpu)
