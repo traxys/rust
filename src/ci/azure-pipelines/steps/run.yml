@@ -42,6 +42,10 @@ steps:
       fi
     displayName: Decide whether to run this job
 
+- bash: cp $(which python) $(dirname $(which python))/python3.exe
+  displayName: Copy python.exe to python3.exe
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
+
 # Spawn a background process to collect CPU usage statistics which we'll upload
 # at the end of the build. See the comments in the script here for more
 # information.
