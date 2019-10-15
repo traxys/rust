@@ -2,6 +2,7 @@
 
 import io
 import os
+import platform
 import re
 import subprocess
 
@@ -57,9 +58,12 @@ class Build:
         # to be executed in order for the following scripts to succeed, so we
         # read the process output line by line and emulate them.
         path = os.path.join(os.path.dirname(__file__), "scripts", script)
+        if platform.system() == "Windows":
+            args = ["bash.exe", "-c", path.replace("\\", "/")]
+        else:
+            args = [path]
         proc = subprocess.Popen(
-            [path],
-            env=self.env,
+            args, env=self.env,
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
         )
         for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
