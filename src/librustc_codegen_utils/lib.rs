@@ -42,7 +42,7 @@ pub fn check_for_rustc_errors_attr(tcx: TyCtxt<'_>) {
                         if list.iter().any(|list_item| {
                             list_item.ident().map(|i| i.name) == Some(sym::delayed)
                         }) {
-                            tcx.sess.delay_span_bug(tcx.def_span(def_id), "compilation successful");
+                            tcx.sess.span_bug(tcx.def_span(def_id), "compilation successful");
                         }
                     }
                     // bare #[rustc_error]
