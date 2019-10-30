@@ -30,7 +30,7 @@ use rustc::session::config::{self, EntryFnType, Lto};
 use rustc::session::Session;
 use rustc::util::nodemap::FxHashMap;
 use rustc_index::vec::Idx;
-use rustc_codegen_utils::{symbol_names_test, check_for_rustc_errors_attr};
+use rustc_codegen_utils::symbol_names_test;
 use rustc::ty::layout::{FAT_PTR_ADDR, FAT_PTR_EXTRA};
 use crate::mir::place::PlaceRef;
 use crate::back::write::{OngoingCodegen, start_async_codegen, submit_pre_lto_module_to_llvm,
