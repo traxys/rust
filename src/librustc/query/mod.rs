@@ -30,6 +30,12 @@ use syntax_pos::symbol::InternedString;
 // as they will raise an fatal error on query cycles instead.
 rustc_queries! {
     Other {
+        query check_for_rustc_errors_attr(_: CrateNum) -> () {
+            desc { "checking for rustc_error attribute" }
+        }
+    }
+
+    Other {
         /// Records the type of every item.
         query type_of(key: DefId) -> Ty<'tcx> {
             cache_on_disk_if { key.is_local() }
