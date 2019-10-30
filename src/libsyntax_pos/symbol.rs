@@ -234,6 +234,7 @@ symbols! {
         default_lib_allocator,
         default_type_parameter_fallback,
         default_type_params,
+        delayed,
         deny,
         deprecated,
         deref,

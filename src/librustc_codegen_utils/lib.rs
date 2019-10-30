@@ -33,8 +33,24 @@ pub mod symbol_names_test;
 /// reporting an error.
 pub fn check_for_rustc_errors_attr(tcx: TyCtxt<'_>) {
     if let Some((def_id, _)) = tcx.entry_fn(LOCAL_CRATE) {
-        if tcx.has_attr(def_id, sym::rustc_error) {
-            tcx.sess.span_fatal(tcx.def_span(def_id), "compilation successful");
+        let attrs = &*tcx.get_attrs(def_id);
+        for attr in attrs {
+            if attr.check_name(sym::rustc_error) {
+                match attr.meta_item_list() {
+                    // check if there is a #[rustc_error(delayed)]
+                    Some(list) => {
+                        if list.iter().any(|list_item| {
+                            list_item.ident().map(|i| i.name) == Some(sym::delayed)
+                        }) {
+                            tcx.sess.delay_span_bug(tcx.def_span(def_id), "compilation successful");
+                        }
+                    }
+                    // bare #[rustc_error]
+                    None => {
+                        tcx.sess.span_fatal(tcx.def_span(def_id), "compilation successful");
+                    }
+                }
+            }
         }
     }
 }
