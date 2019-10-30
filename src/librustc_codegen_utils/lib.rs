@@ -40,7 +40,7 @@ pub fn check_for_rustc_errors_attr(tcx: TyCtxt<'_>) {
                     // check if there is a #[rustc_error(delayed)]
                     Some(list) => {
                         if list.iter().any(|list_item| {
-                            list_item.ident().map(|i| i.name) == Some(sym::delayed)
+                            list_item.ident().map(|i| i.name) == Some(sym::delay_span_bug)
                         }) {
                             tcx.sess.delay_span_bug(tcx.def_span(def_id), "compilation successful");
                         }
