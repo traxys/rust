@@ -19,7 +19,7 @@ extern crate rustc;
 
 use rustc::ty::TyCtxt;
 use rustc::ty::query::Providers;
-use rustc::hir::def_id::LOCAL_CRATE;
+use rustc::hir::def_id::{LOCAL_CRATE, DefId};
 use syntax::symbol::sym;
 
 pub mod link;
