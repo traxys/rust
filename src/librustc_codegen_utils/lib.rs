@@ -19,7 +19,7 @@ extern crate rustc;
 
 use rustc::ty::TyCtxt;
 use rustc::ty::query::Providers;
-use rustc::hir::def_id::CrateNum;
+use rustc::hir::def_id::LOCAL_CRATE;
 use syntax::symbol::sym;
 
 pub mod link;
@@ -27,12 +27,17 @@ pub mod codegen_backend;
 pub mod symbol_names;
 pub mod symbol_names_test;
 
+
+pub fn trigger_delay_span_bug(tcx: TyCtxt<'_>, key: DefId) {
+    tcx.sess.delay_span_bug(tcx.def_span(key), "compilation successful");
+}
+
 /// check for the #[rustc_error] annotation, which forces an
 /// error in codegen. This is used to write compile-fail tests
 /// that actually test that compilation succeeds without
 /// reporting an error.
-pub fn check_for_rustc_errors_attr(tcx: TyCtxt<'_>, cnum: CrateNum) {
-    if let Some((def_id, _)) = tcx.entry_fn(cnum) {
+pub fn check_for_rustc_errors_attr(tcx: TyCtxt<'_>) {
+    if let Some((def_id, _)) = tcx.entry_fn(LOCAL_CRATE) {
         let attrs = &*tcx.get_attrs(def_id);
         for attr in attrs {
             if attr.check_name(sym::rustc_error) {
@@ -42,7 +47,7 @@ pub fn check_for_rustc_errors_attr(tcx: TyCtxt<'_>, cnum: CrateNum) {
                         if list.iter().any(|list_item| {
                             list_item.ident().map(|i| i.name) == Some(sym::delay_span_bug)
                         }) {
-                            tcx.sess.delay_span_bug(tcx.def_span(def_id), "compilation successful");
+                            tcx.ensure().trigger_delay_span_bug(def_id);
                         }
                     }
                     // bare #[rustc_error]
@@ -58,7 +63,7 @@ pub fn check_for_rustc_errors_attr(tcx: TyCtxt<'_>, cnum: CrateNum) {
 pub fn provide(providers: &mut Providers<'_>) {
     crate::symbol_names::provide(providers);
     *providers = Providers {
-        check_for_rustc_errors_attr,
+        trigger_delay_span_bug,
         ..*providers
     };
 }

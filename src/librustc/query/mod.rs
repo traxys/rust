@@ -30,8 +30,8 @@ use syntax_pos::symbol::InternedString;
 // as they will raise an fatal error on query cycles instead.
 rustc_queries! {
     Other {
-        query check_for_rustc_errors_attr(_: CrateNum) -> () {
-            desc { "checking for rustc_error attribute" }
+        query trigger_delay_span_bug(key: DefId) -> () {
+            desc { "trigger a delay span bug" }
         }
     }
 
