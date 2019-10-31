@@ -32,6 +32,7 @@ rustc_queries! {
     Other {
         query check_for_rustc_errors_attr(_: CrateNum) -> () {
             desc { "checking for rustc_error attribute" }
+            cache_on_disk_if { true }
         }
     }
 
